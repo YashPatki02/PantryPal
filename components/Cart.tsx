@@ -165,6 +165,7 @@ const Cart = () => {
                                         {items.map((item, index) => (
                                             
                                                 <CartItem
+                                                    key={index}
                                                     item={item}
                                                     isEditing={
                                                         isEditing ===
