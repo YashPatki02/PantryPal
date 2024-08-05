@@ -6,17 +6,25 @@ import { useAuth } from "@/context/AuthContext";
 import Cart from "@/components/Cart";
 import AddCart from "@/components/AddCart";
 import Nav from "@/components/Nav";
+import { useEffect } from "react";
+import { redirect } from "next/navigation";
 
 const Home = () => {
     const { authUser, isLoading: authLoading } = useAuth();
     const { pantry, pantryLoading } = usePantry();
     const { cart, cartLoading } = useCart();
 
-    // console.log(authUser, authLoading, pantry, pantryLoading);
+    useEffect(() => {
+        if (!authUser) {
+            redirect("/login");
+        }
+    }, [authUser]);
 
-    if (authUser && (authLoading || pantryLoading)) {
+    if (authUser && (authLoading || pantryLoading || cartLoading)) {
         return (
-            <div className="flex min-h-screen items-center justify-center">Loading...</div>
+            <div className="flex min-h-screen items-center justify-center">
+                Loading...
+            </div>
         );
     }
     return (

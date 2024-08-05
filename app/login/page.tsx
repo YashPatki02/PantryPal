@@ -34,7 +34,7 @@ export default function LoginPage() {
     return (
         <main className="flex min-h-screen flex-col items-center p-4">
             <h1 className="text-2xl font-bold">PantryPal</h1>
-            <div className="flex items-center justify-center min-h-auto space-x-2">
+            <div className="flex items-center justify-center min-h-auto mt-6 space-x-2">
                 <Tabs defaultValue="register" className="w-[400px]">
                     <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="register">Register</TabsTrigger>

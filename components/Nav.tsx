@@ -21,7 +21,7 @@ function Nav() {
     return (
         <nav className="flex justify-between items-center w-full max-w-4xl p-4">
             <Link href="/">
-                <h1 className="text-2xl font-bold">Pantry</h1>
+                <h1 className="text-2xl font-bold">PantryPal</h1>
             </Link>
             <div className="flex flex-row gap-2 max-sm:hidden">
                 <Link href="/add-item">
