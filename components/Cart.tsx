@@ -246,7 +246,7 @@ const Cart = () => {
                             <h3 className="text-lg font-bold">
                                 Healthier Alternatives
                             </h3>
-                            <ul className="list-disc ml-4 list-inside">
+                            <ul className="list-disc ml-6 list-inside">
                                 {healthierAlternatives.map(
                                     (item: PantryItemInput, index) => (
                                         <li key={index}>{item.name}</li>
@@ -260,7 +260,7 @@ const Cart = () => {
                             <h3 className="text-lg font-bold">
                                 Shopping Suggestions
                             </h3>
-                            <ul className="list-disc ml-4 list-inside">
+                            <ul className="list-disc ml-6 list-inside">
                                 {shoppingItems.map(
                                     (item: PantryItemInput, index) => (
                                         <li key={index}>{item.name}</li>
