@@ -163,6 +163,34 @@ const Cart = () => {
                 </div>
             ) : (
                 <>
+                    {selectedItems && healthierAlternatives.length > 0 && (
+                        <div className="w-auto p-4 flex flex-col justify-start items-start gap-2 rounded-md shadow-lg flex-wrap">
+                            <h3 className="text-lg font-bold">
+                                Healthier Alternatives
+                            </h3>
+                            <ul className="list-disc ml-6 list-inside">
+                                {healthierAlternatives.map(
+                                    (item: PantryItemInput, index) => (
+                                        <li key={index}>{item.name}</li>
+                                    )
+                                )}
+                            </ul>
+                        </div>
+                    )}
+                    {selectedItems && shoppingItems.length > 0 && (
+                        <div className="w-auto p-4 flex flex-col justify-start items-start gap-2 rounded-md shadow-lg flex-wrap">
+                            <h3 className="text-lg font-bold">
+                                Shopping Suggestions
+                            </h3>
+                            <ul className="list-disc ml-6 list-inside">
+                                {shoppingItems.map(
+                                    (item: PantryItemInput, index) => (
+                                        <li key={index}>{item.name}</li>
+                                    )
+                                )}
+                            </ul>
+                        </div>
+                    )}
                     {isEditing ? (
                         <CartItem
                             item={editedItem as CartItemType}
@@ -241,34 +269,7 @@ const Cart = () => {
                             </div>
                         ))
                     )}
-                    {selectedItems && healthierAlternatives.length > 0 && (
-                        <div className="w-auto p-4 flex flex-col justify-start items-start gap-2 rounded-md shadow-lg flex-wrap">
-                            <h3 className="text-lg font-bold">
-                                Healthier Alternatives
-                            </h3>
-                            <ul className="list-disc ml-6 list-inside">
-                                {healthierAlternatives.map(
-                                    (item: PantryItemInput, index) => (
-                                        <li key={index}>{item.name}</li>
-                                    )
-                                )}
-                            </ul>
-                        </div>
-                    )}
-                    {selectedItems && shoppingItems.length > 0 && (
-                        <div className="w-auto p-4 flex flex-col justify-start items-start gap-2 rounded-md shadow-lg flex-wrap">
-                            <h3 className="text-lg font-bold">
-                                Shopping Suggestions
-                            </h3>
-                            <ul className="list-disc ml-6 list-inside">
-                                {shoppingItems.map(
-                                    (item: PantryItemInput, index) => (
-                                        <li key={index}>{item.name}</li>
-                                    )
-                                )}
-                            </ul>
-                        </div>
-                    )}
+
                     {selectedItems.size > 0 && (
                         <div className="fixed bg-white bottom-4 left-4 right-4 w-auto p-4 flex justify-center items-center gap-2 rounded-md shadow-lg flex-wrap">
                             <Button
