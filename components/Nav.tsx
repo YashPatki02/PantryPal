@@ -2,8 +2,13 @@ import React from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Logout from "./Logout";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { MoreVertical } from "lucide-react";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { MoreVertical, Plus, ShoppingCart } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
 function Nav() {
@@ -23,36 +28,35 @@ function Nav() {
             <Link href="/">
                 <h1 className="text-2xl font-bold">PantryPal</h1>
             </Link>
-            <div className="flex flex-row gap-2 max-sm:hidden">
+            <div className="flex flex-row gap-2 max-sm:hidden items-center">
+                <Link href="/cart" className="mr-4">
+                        Cart
+                </Link>
                 <Link href="/add-item">
-                    <Button>Add Item</Button>
+                    <Button variant="secondary">
+                        <Plus className="mr-2" /> Add Item
+                    </Button>
                 </Link>
-                <Link href="/cart">
-                    <Button> Cart</Button>
-                </Link>
+
                 <Logout />
             </div>
             <div className="hidden max-sm:flex">
-            <DropdownMenu>
-                <DropdownMenuTrigger>
-                    <MoreVertical size={24} />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent side="bottom" align="end">
-                    <DropdownMenuItem>
-                        <Link href="/add-item">
-                            Add Item
-                        </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                        <Link href="/cart">
-                            Cart
-                        </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={handleLogout}>
-                        Logout
-                    </DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
+                <DropdownMenu>
+                    <DropdownMenuTrigger>
+                        <MoreVertical size={24} />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent side="bottom" align="end">
+                        <DropdownMenuItem>
+                            <Link href="/add-item">Add Item</Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                            <Link href="/cart">Cart</Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={handleLogout}>
+                            Logout
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
             </div>
         </nav>
     );

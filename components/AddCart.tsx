@@ -52,7 +52,7 @@ const AddCart: FC = () => {
     };
 
     return (
-        <div className="flex min-h-screen flex-col items-start justify-start max-sm:items-center p-4">
+        <div className="flex min-h-screen flex-col items-start justify-start max-sm:items-center">
             <h2 className="text-xl font-semibold mb-4 text-start">Add to Cart</h2>
             <Formik
                 initialValues={initialValues}

@@ -88,8 +88,11 @@ const CartItem: FC<CartItemProps> = ({
         }
     };
 
-    return isEditing && editedItem.name === item.name ? (
-        <Card>
+    return isEditing &&
+        editedItem.name === item.name &&
+        editedItem.count === item.count &&
+        editedItem.store === item.store ? (
+        <Card className="p-4">
             <Formik
                 initialValues={editedItem}
                 validationSchema={validationSchema}
@@ -104,6 +107,7 @@ const CartItem: FC<CartItemProps> = ({
                                 type="text"
                                 id="name"
                                 name="name"
+                                disabled={true}
                             />
                             <ErrorMessage
                                 name="name"
@@ -146,6 +150,7 @@ const CartItem: FC<CartItemProps> = ({
                                 type="text"
                                 id="store"
                                 name="store"
+                                disabled={true}
                             />
                             <ErrorMessage
                                 name="store"

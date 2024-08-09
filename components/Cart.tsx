@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { usePantry } from "@/context/PantryContext";
 import CartItem from "./CartItem";
@@ -14,6 +14,8 @@ import {
     TableCell,
 } from "@/components/ui/table";
 import { Button } from "./ui/button";
+import { LoaderCircle, Plus, Salad, ShoppingCart, Trash } from "lucide-react";
+import { healthierResponse, shoppingResponse } from "@/config/gemini";
 
 const Cart = () => {
     const { cart, setCart, updateCartItem, removeCartItem } = useCart();
@@ -21,7 +23,10 @@ const Cart = () => {
     const [isEditing, setIsEditing] = useState<string | null>(null);
     const [editedItem, setEditedItem] = useState<CartItemType | null>(null);
     const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
-
+    const [alternativesLoading, setAlternativesLoading] = useState(false);
+    const [shoppingLoading, setShoppingLoading] = useState(false);
+    const [healthierAlternatives, setHealthierAlternatives] = useState([]);
+    const [shoppingItems, setShoppingItems] = useState([]);
 
     // Group cart items by store
     const stores = cart.reduce((acc, item) => {
@@ -92,7 +97,7 @@ const Cart = () => {
 
     const handleSelectedItems = async (action: "add" | "delete") => {
         const itemsToProcess = cart.filter((item) =>
-            selectedItems.has(item.name + item.store)
+            selectedItems.has(`${item.name}-${item.store}`)
         );
         if (action === "add") {
             await handleAddToPantry(itemsToProcess);
@@ -107,7 +112,7 @@ const Cart = () => {
 
     const toggleItemSelection = (item: CartItemType) => {
         setSelectedItems((prevSelected) => {
-            const key = item.name + item.store;
+            const key = `${item.name}-${item.store}`;
             const newSelected = new Set(prevSelected);
             if (newSelected.has(key)) {
                 newSelected.delete(key);
@@ -118,6 +123,38 @@ const Cart = () => {
         });
     };
 
+    const giveHealthierAlternatives = async () => {
+        setAlternativesLoading(true);
+        console.log(selectedItems);
+        try {
+            const result = await healthierResponse(selectedItems);
+            setHealthierAlternatives(result);
+        } catch (error) {
+            console.error("Error generating healthier alternatives:", error);
+        } finally {
+            setAlternativesLoading(false);
+        }
+    };
+
+    const giveShoppingItems = async () => {
+        setShoppingLoading(true);
+        try {
+            const result = await shoppingResponse(selectedItems);
+            setShoppingItems(result);
+        } catch (error) {
+            console.error("Error generating shopping items:", error);
+        } finally {
+            setShoppingLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (selectedItems.size === 0) {
+            setHealthierAlternatives([]);
+            setShoppingItems([]);
+        }
+    }, [selectedItems]);
+
     return (
         <div>
             {cart.length === 0 ? (
@@ -126,31 +163,37 @@ const Cart = () => {
                 </div>
             ) : (
                 <>
-                    {storeTotals.map(({ store, total, items }) => (
-                        <div key={store} className="mb-8 max-sm:bg-red max-sm:p-6">
-                            <div className="flex flex-row justify-between items-center">
-                                <h2 className="text-xl font-bold">{store}</h2>
-                                <h3 className="text-l text-primary">
-                                    Total: ${total.toFixed(2)}
-                                </h3>
-                            </div>
-                            {isEditing ? (
-                                <CartItem
-                                    item={editedItem as CartItemType}
-                                    isEditing={true}
-                                    onEdit={() => {}}
-                                    onCancelEdit={() => {
-                                        setIsEditing(null);
-                                        setEditedItem(null);
-                                    }}
-                                    onUpdate={handleUpdate}
-                                    onDelete={() => {}}
-                                    editedItem={editedItem as CartItemType}
-                                    setEditedItem={setEditedItem}
-                                    isSelected={false}
-                                    toggleItemSelection={() => {}}
-                                />
-                            ) : (
+                    {isEditing ? (
+                        <CartItem
+                            item={editedItem as CartItemType}
+                            isEditing={true}
+                            onEdit={() => {}}
+                            onCancelEdit={() => {
+                                setIsEditing(null);
+                                setEditedItem(null);
+                            }}
+                            onUpdate={handleUpdate}
+                            onDelete={() => {}}
+                            editedItem={editedItem as CartItemType}
+                            setEditedItem={setEditedItem}
+                            isSelected={false}
+                            toggleItemSelection={() => {}}
+                        />
+                    ) : (
+                        storeTotals.map(({ store, total, items }) => (
+                            <div
+                                key={store}
+                                className="mb-8 flex flex-col items-start gap-2 rounded-md shadow-lg"
+                            >
+                                <div className="flex flex-col items-start px-6">
+                                    <h2 className="text-xl font-bold">
+                                        {store}
+                                    </h2>
+                                    <h3 className="text-l text-primary right-0">
+                                        Total: ${total.toFixed(2)}
+                                    </h3>
+                                </div>
+
                                 <Table>
                                     <TableHeader>
                                         <TableRow>
@@ -158,64 +201,116 @@ const Cart = () => {
                                             <TableHead>Name</TableHead>
                                             <TableHead>Count</TableHead>
                                             <TableHead>Cost</TableHead>
+                                            <TableHead>Store</TableHead>
                                             <TableHead>Actions</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
                                         {items.map((item, index) => (
-                                            
-                                                <CartItem
-                                                    key={index}
-                                                    item={item}
-                                                    isEditing={
-                                                        isEditing ===
-                                                            item.name &&
-                                                        item.store ===
-                                                            item.store
-                                                    }
-                                                    onEdit={() => {
-                                                        setIsEditing(item.name);
-                                                        setEditedItem(item);
-                                                    }}
-                                                    onCancelEdit={() => {
-                                                        setIsEditing(null);
-                                                        setEditedItem(null);
-                                                    }}
-                                                    onUpdate={handleUpdate}
-                                                    onDelete={() =>
-                                                        handleDelete(item)
-                                                    }
-                                                    editedItem={
-                                                        editedItem || item
-                                                    }
-                                                    setEditedItem={
-                                                        setEditedItem
-                                                    }
-                                                    isSelected={selectedItems.has(
-                                                    item.name + item.store
+                                            <CartItem
+                                                key={index}
+                                                item={item}
+                                                isEditing={
+                                                    isEditing === item.name &&
+                                                    item.store === item.store
+                                                }
+                                                onEdit={() => {
+                                                    setIsEditing(item.name);
+                                                    setEditedItem(item);
+                                                }}
+                                                onCancelEdit={() => {
+                                                    setIsEditing(null);
+                                                    setEditedItem(null);
+                                                }}
+                                                onUpdate={handleUpdate}
+                                                onDelete={() =>
+                                                    handleDelete(item)
+                                                }
+                                                editedItem={editedItem || item}
+                                                setEditedItem={setEditedItem}
+                                                isSelected={selectedItems.has(
+                                                    `${item.name}-${item.store}`
                                                 )}
                                                 toggleItemSelection={() =>
                                                     toggleItemSelection(item)
                                                 }
-                                                />
+                                            />
                                         ))}
                                     </TableBody>
                                 </Table>
-                            )}
+                            </div>
+                        ))
+                    )}
+                    {selectedItems && healthierAlternatives.length > 0 && (
+                        <div className="w-auto p-4 flex flex-col justify-start items-start gap-2 rounded-md shadow-lg flex-wrap">
+                            <h3 className="text-lg font-bold">
+                                Healthier Alternatives
+                            </h3>
+                            <ul className="list-disc ml-4 list-inside">
+                                {healthierAlternatives.map(
+                                    (item: PantryItemInput, index) => (
+                                        <li key={index}>{item.name}</li>
+                                    )
+                                )}
+                            </ul>
                         </div>
-                    ))}
+                    )}
+                    {selectedItems && shoppingItems.length > 0 && (
+                        <div className="w-auto p-4 flex flex-col justify-start items-start gap-2 rounded-md shadow-lg flex-wrap">
+                            <h3 className="text-lg font-bold">
+                                Shopping Suggestions
+                            </h3>
+                            <ul className="list-disc ml-4 list-inside">
+                                {shoppingItems.map(
+                                    (item: PantryItemInput, index) => (
+                                        <li key={index}>{item.name}</li>
+                                    )
+                                )}
+                            </ul>
+                        </div>
+                    )}
                     {selectedItems.size > 0 && (
-                        <div className="fixed bottom-0 left-0 right-0 p-4 bg-gray-100 flex justify-between items-center">
+                        <div className="fixed bg-white bottom-4 left-4 right-4 w-auto p-4 flex justify-center items-center gap-2 rounded-md shadow-lg flex-wrap">
                             <Button
-                                className="px-4 py-2 bg-green-500 text-white rounded"
+                                className="px-4 py-2 rounded"
                                 onClick={() => handleSelectedItems("add")}
+                                variant="outline"
                             >
+                                <Plus className="mr-2" />
                                 Add to Pantry
                             </Button>
                             <Button
-                                className="px-4 py-2 bg-red-500 text-white rounded"
+                                onClick={giveHealthierAlternatives}
+                                disabled={alternativesLoading}
+                            >
+                                {alternativesLoading ? (
+                                    <LoaderCircle className="mr-2 animate-spin" />
+                                ) : (
+                                    <Salad className="mr-2" />
+                                )}
+                                {alternativesLoading
+                                    ? "Getting Alternatives..."
+                                    : "Get Alternatives"}
+                            </Button>
+                            <Button
+                                onClick={giveShoppingItems}
+                                disabled={shoppingLoading}
+                            >
+                                {shoppingLoading ? (
+                                    <LoaderCircle className="mr-2 animate-spin" />
+                                ) : (
+                                    <ShoppingCart className="mr-2" />
+                                )}
+                                {shoppingLoading
+                                    ? "Getting Suggestions..."
+                                    : "Get Suggestions"}
+                            </Button>
+                            <Button
+                                className="px-4 py-2"
+                                variant="destructive"
                                 onClick={() => handleSelectedItems("delete")}
                             >
+                                <Trash className="mr-2" />
                                 Delete
                             </Button>
                         </div>
@@ -227,5 +322,3 @@ const Cart = () => {
 };
 
 export default Cart;
-
-

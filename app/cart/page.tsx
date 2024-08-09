@@ -27,14 +27,15 @@ const Home = () => {
             </div>
         );
     }
+
     return (
-        <div className="flex min-h-screen flex-col items-center justify-start p-4">
+        <div className="flex min-h-screen flex-col items-center justify-center">
             <Nav />
-            <div className="flex flex-row max-sm:flex-col gap-2 min-w-[80%] justify-center items-start mt-6">
-                <div className="max-sm:w-full w-[70%] flex justify-center items-center">
+            <div className="grid grid-cols-1 md:grid-cols-3 mb-8 mt-6 gap-4">
+                <div className="col-span-2 flex justify-start items-start overflow-scroll px-2">
                     <Cart />
                 </div>
-                <div className="max-sm:w-full max-sm:border-none border-l w-[30%]">
+                <div className="col-span-1 md:border-l w-full flex justify-center items-center ">
                     <AddCart />
                 </div>
             </div>
