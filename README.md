@@ -16,7 +16,12 @@ PantryPal is deployed on Vercel. You can view the live app here: [PantryPal Live
 
 ## Screenshots
 
-_Add screenshots of your app’s features here._
+<img src="https://github.com/YashPatki02/PantryPal/blob/main/screenshots/home.png" alt="Pantry Page" width="600" height="auto" />
+<img src="https://github.com/YashPatki02/PantryPal/blob/main/screenshots/recipe.png" alt="Pantry Recipe" width="600" height="auto" />
+<img src="https://github.com/YashPatki02/PantryPal/blob/main/screenshots/pantry_modal.png" alt="Pantry Modal" width="600" height="auto" />
+<img src="https://github.com/YashPatki02/PantryPal/blob/main/screenshots/cart.png" alt="Cart Page" width="600" height="auto" />
+<img src="https://github.com/YashPatki02/PantryPal/blob/main/screenshots/cart_options.png" alt="Cart Options" width="600" height="auto" />
+<img src="https://github.com/YashPatki02/PantryPal/blob/main/screenshots/cart-genai.png" alt="Cart GenAI Features" width="600" height="auto" />
 
 ## Getting Started
 
